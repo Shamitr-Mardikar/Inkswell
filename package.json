@@ -14,6 +14,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "new": "tsx scripts/new-post.ts",
+    "new-blog": "node scripts/create-blog.js",
     "update-theme": "tsx scripts/update-theme.ts"
   },
   "dependencies": {

@@ -2,13 +2,12 @@ import { getCollection } from 'astro:content'
 import { OGImageRoute } from 'astro-og-canvas'
 import { themeConfig } from '../../config'
 
-const collectionEntries = await getCollection('posts')
+// Only use blogs collection for OpenGraph images
+const blogsEntries = await getCollection('blogs')
 
-// Map the array of content collection entries to create an object.
-// Converts [{ id: 'post.md', data: { title: 'Example', pubDate: Date } }]
-// to { 'post.md': { title: 'Example', pubDate: Date } }
+// Map entries: use folder name (before first "/") as key
 const pages = Object.fromEntries(
-  collectionEntries.map(({ id, data }) => [id.replace(/\.(md|mdx)$/, ''), data])
+  blogsEntries.map(({ id, data }) => [id.split('/')[0], data])
 )
 
 export const { getStaticPaths, GET } = OGImageRoute({

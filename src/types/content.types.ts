@@ -14,7 +14,7 @@ export interface TOCItem {
   index: number
 }
 
-// PostList component props interface
+// PostList component props interface - now handles both posts and blogs
 export interface PostListProps {
-  posts: CollectionEntry<'posts'>[]
+  posts: (CollectionEntry<'posts'> | CollectionEntry<'blogs'>)[]
 }

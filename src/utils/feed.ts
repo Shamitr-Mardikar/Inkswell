@@ -14,16 +14,13 @@ const markdownParser = new MarkdownIt({
   typographer: true
 })
 
+// Image modules under blogs/_assets in any blog folder
 const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/content/posts/_assets/**/*.{jpeg,jpg,png,gif,webp}'
+  '/src/content/blogs/**/_assets/**/*.{jpeg,jpg,png,gif,webp}'
 )
 
 /**
  * Fix relative image paths in HTML content and convert them to absolute URLs
- * @param htmlContent - HTML string converted from Markdown
- * @param baseUrl - Base URL of the website
- * @param postPath - Current post path (e.g., 'some-post.md' or 'tech/another-post.md')
- * @returns - HTML string with processed image paths
  */
 async function fixRelativeImagePaths(
   htmlContent: string,
@@ -43,49 +40,37 @@ async function fixRelativeImagePaths(
     }
 
     if (src.startsWith('./') || src.startsWith('../')) {
-      // Build path relative to /src/content/posts
+      // Build path relative to /src/content/blogs
       let resolvedPath: string
       if (src.startsWith('./')) {
-        // ./xxx -> postDir/xxx
-        resolvedPath = path.posix.join('/src/content/posts', postDir, src.slice(2))
+        resolvedPath = path.posix.join('/src/content/blogs', postDir, src.slice(2))
       } else {
-        // ../xxx -> Resolve to parent directory
-        resolvedPath = path.posix.resolve('/src/content/posts', postDir, src)
+        resolvedPath = path.posix.resolve('/src/content/blogs', postDir, src)
       }
 
-      // Check if corresponding image module exists
       if (imagesGlob[resolvedPath]) {
         try {
           const imageModule = await imagesGlob[resolvedPath]()
           const metadata = imageModule.default
 
-          // In development environment, don't process images, use original paths to ensure cross-platform compatibility
           if (import.meta.env.DEV) {
-            // Development environment: use relative paths
-            const relativePath = resolvedPath.replace('/src/content/posts/', '/')
+            const relativePath = resolvedPath.replace('/src/content/blogs/', '/')
             const imageUrl = new URL(relativePath, baseUrl).toString()
             img.setAttribute('src', imageUrl)
           } else {
-            // Production environment: use getImage optimization
             const processedImage = await getImage({
               src: metadata,
               format: 'webp',
               width: 800
             })
-            
-            // Always use the optimized image path in production
             img.setAttribute('src', new URL(processedImage.src, baseUrl).toString())
           }
         } catch (error) {
           console.error(`[Feed] Image processing failed: ${src} -> ${resolvedPath}`, error)
-          // Use original path as fallback when error occurs
-          const relativePath = resolvedPath.replace('/src/content/posts/', '/')
+          const relativePath = resolvedPath.replace('/src/content/blogs/', '/')
           const imageUrl = new URL(relativePath, baseUrl).toString()
           img.setAttribute('src', imageUrl)
         }
-      } else {
-        console.warn(`[Feed] Image module not found: ${resolvedPath}`)
-        console.warn(`[Feed] Available image modules:`, Object.keys(imagesGlob))
       }
     } else if (src.startsWith('/')) {
       img.setAttribute('src', new URL(src, baseUrl).toString())
@@ -95,9 +80,6 @@ async function fixRelativeImagePaths(
   return root.toString()
 }
 
-/**
- * Generate a generic Feed instance
- */
 async function generateFeedInstance(context: APIContext) {
   const siteUrl = (context.site?.toString() || themeConfig.site.website).replace(/\/$/, '')
   const { title = '', description = '', author = '', language = 'en-US' } = themeConfig.site
@@ -121,17 +103,12 @@ async function generateFeedInstance(context: APIContext) {
     }
   })
 
-  const posts = await getCollection(
-    'posts',
-    ({ id }: CollectionEntry<'posts'>) => !id.startsWith('_')
-  )
-  const sortedPosts = posts.sort(
-    (a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) =>
-      b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-  )
+  // Only blogs collection
+  const blogs = await getCollection('blogs')
+  const allContent = blogs.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 
-  for (const post of sortedPosts) {
-    const postSlug = post.id.replace(/\.[^/.]+$/, '')
+  for (const post of allContent) {
+    const postSlug = post.id.split('/')[0]
     const postUrl = new URL(postSlug, siteUrl).toString()
     const rawHtml = markdownParser.render(post.body || '')
     const processedHtml = await fixRelativeImagePaths(rawHtml, siteUrl, post.id)

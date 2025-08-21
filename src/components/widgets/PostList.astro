@@ -4,13 +4,26 @@ import type { PostListProps } from '@/types'
 import { themeConfig } from '@/config'
 
 const { posts } = Astro.props as PostListProps
+
+// Helper function to get the correct URL for a post
+function getPostUrl(post: any) {
+  // For blog posts (from blogs collection), use the folder name
+  // For regular posts (from posts collection), use the id as before
+  if (post.id.includes('/')) {
+    // This is a blog post, extract folder name
+    return `/${post.id.split('/')[0]}/`
+  } else {
+    // This is a regular post
+    return `/${post.id}/`
+  }
+}
 ---
 
 <ul>
   {
     posts.map((post) => (
       <li>
-        <a href={`/${post.id}/`}>
+        <a href={getPostUrl(post)}>
           <div class={`post-item ${!themeConfig.date.dateOnRight ? 'date-left' : ''}`}>
             {!themeConfig.date.dateOnRight && (
               <p class="date font-features">
