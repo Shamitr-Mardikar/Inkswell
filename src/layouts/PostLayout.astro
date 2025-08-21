@@ -22,7 +22,8 @@ import { themeConfig } from '@/config'
 const { title, pubDate, readingTime, toc } = Astro.props as PostLayoutProps
 
 const postSlug = Astro.url.pathname.split('/').filter(Boolean).pop() || ''
-const ogImage = `/open-graph/${postSlug}.png`
+const base = import.meta.env.BASE_URL || '/'
+const ogImage = `${base}open-graph/${postSlug}.png`
 ---
 
 <BaseLayout
