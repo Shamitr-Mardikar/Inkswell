@@ -20,8 +20,7 @@ export default defineConfig({
   // Use static output for GitHub Pages
   output: 'static',
   site: themeConfig.site.website,
-  // Base path for project page on GitHub Pages
-  base: '/Inkswell',
+  // Base removed for custom root domain
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',

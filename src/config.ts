@@ -3,7 +3,7 @@ import type { ThemeConfig } from './types'
 export const themeConfig: ThemeConfig = {
   // SITE INFO ///////////////////////////////////////////////////////////////////////////////////////////
   site: {
-    website: 'https://Shamitr-Mardikar.github.io/Inkswell/', // Site domain
+    website: 'https://inkswell.in/', // Site domain
     title: 'Inkswell', // Site title
     author: '3ASH', // Author name
     description: 'A thoughtful blog built with Astro', // Site description
