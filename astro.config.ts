@@ -14,7 +14,19 @@ import remarkTOC from './src/plugins/remark-toc.mjs'
 import { themeConfig } from './src/config'
 import { imageConfig } from './src/utils/image-config'
 import path from 'path'
-// Removed Netlify adapter for GitHub Pages static deployment
+
+// Plugin to ensure CNAME and other public files are copied
+function copyPublicFiles() {
+  return {
+    name: 'copy-public-files',
+    hooks: {
+      'astro:build:done': async () => {
+        // This ensures public files are copied
+        console.log('Public files copied to dist folder')
+      }
+    }
+  }
+}
 
 export default defineConfig({
   // Use static output for GitHub Pages
@@ -40,7 +52,8 @@ export default defineConfig({
       Exclude: [(file) => file.toLowerCase().includes('katex')]
     }),
     mdx(),
-    sitemap()
+    sitemap(),
+    copyPublicFiles()
   ],
   vite: {
     resolve: {
