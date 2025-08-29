@@ -1,4 +1,10 @@
-# A Final Goodbye
+---
+title: "The Last Goodbye"
+pubDate: "2024-06-01"
+description: "Blog 2"
+author: "S"
+---
+
 
 I stood there, *The Scientist* by Coldplay echoing softly in my ears as I drew in another puff, the smoke dissolving into the rain-soaked air that wrapped itself around the airport gates. It was twenty minutes past seven, and my flight was scheduled to board at 7:25. The drizzle tapped steadily against the glass panes, blurring the lights outside into streaks of gold and silver.
 

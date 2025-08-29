@@ -1,4 +1,10 @@
-# A Final Goodbye
+---
+title: "A Final Goodbye"
+pubDate: "2024-06-01"
+description: "Blog 1"
+author: "S"
+---
+
 
 The lingering scent of her perfume, a final whisper as she drained the last drop of her cocktail, marked the beginning of a long absence. It felt like carefully folding a precious memory and tucking it away, knowing it would be a while before I'd stumble upon it again. A bittersweet ache settled in my chest. 
 
